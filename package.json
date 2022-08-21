@@ -1,0 +1,16 @@
+{
+  "name": "check-pass",
+  "version": "1.0.0",
+  "description": "A micro-library for checking and enforcing password constraints",
+  "main": "/src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "check",
+    "password",
+    "strength"
+  ],
+  "author": "Rahul Rao",
+  "license": "MIT"
+}
