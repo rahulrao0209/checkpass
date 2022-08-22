@@ -17,7 +17,37 @@
     Check 9: Allow options to provide a deny list to prevent certain characters/special
              characters from being used.
 */
+type Constraints = {
+  minLength: number;
+  maxLength?: number;
+  minCapitalLetters: number;
+  maxCapitalLetters?: number;
+  minNumbers: number;
+  maxNumbers?: number;
+  minSpecialCharacters: number;
+  maxSpecialCharacters?: number;
+};
 
-console.log(
-  "Checkpass library for enforcing and verifying password constraints"
-);
+const defaultConstraints: Constraints = {
+  minLength: 0,
+  minCapitalLetters: 0,
+  minNumbers: 0,
+  minSpecialCharacters: 0,
+};
+
+class Checkpass {
+  enforce(password: string, constraints: Constraints = defaultConstraints) {
+    console.log("Password: ", password);
+  }
+}
+
+const test = new Checkpass();
+
+test.enforce("Rahul123#", {
+  minLength: 6,
+  minCapitalLetters: 2,
+  minNumbers: 1,
+  minSpecialCharacters: 1,
+});
+
+test.enforce("RaAbc!");
