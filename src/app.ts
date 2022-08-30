@@ -1,10 +1,10 @@
-import Checkpass from "./checkpass";
+import checkpass from "./checkpass";
 
-Checkpass.enforce("Rahul123#", {
+checkpass.enforce("Rahul123#", {
   minLength: 6,
   minCapitalLetters: 2,
   minNumbers: 1,
   minSpecialCharacters: 1,
 });
 
-Checkpass.enforce("RaAbc!");
+checkpass.enforce("RaAbc!");
