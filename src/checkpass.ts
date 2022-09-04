@@ -36,8 +36,29 @@ const defaultConstraints: Constraints = {
 };
 
 class Checkpass {
+  #checklength(
+    password: string,
+    minLength: number,
+    maxLength: number | undefined
+  ) {
+    if (password.length < minLength) return "too small";
+
+    if (maxLength && password.length > maxLength)
+      return `Max ${maxLength} characters are allowed`;
+
+    return "ok";
+  }
+
   enforce(password: string, constraints: Constraints = defaultConstraints) {
     console.log("Password: ", password);
+
+    const lengthVerify = this.#checklength(
+      password,
+      constraints.minLength,
+      constraints.maxLength
+    );
+
+    console.log("Verify length: ", lengthVerify);
   }
 }
 
