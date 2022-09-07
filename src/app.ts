@@ -1,5 +1,6 @@
 import checkpass from "./checkpass";
 
+// TEST 1
 checkpass.enforce("Rahul123#", {
   minLength: 6,
   minCapitalLetters: 2,
@@ -7,8 +8,10 @@ checkpass.enforce("Rahul123#", {
   minSpecialCharacters: 1,
 });
 
+// TEST 2
 checkpass.enforce("RaAbc!");
 
+// TEST 3
 checkpass.enforce("Rahul", {
   minLength: 6,
   minCapitalLetters: 2,

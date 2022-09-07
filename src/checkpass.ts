@@ -49,6 +49,14 @@ class Checkpass {
     return "ok";
   }
 
+  #checkCapitalLetters() {
+    // TODO
+  }
+
+  #checkSpecialCharacters() {
+    // TODO
+  }
+
   enforce(password: string, constraints: Constraints = defaultConstraints) {
     console.log("Password: ", password);
 
