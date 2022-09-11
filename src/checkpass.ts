@@ -26,6 +26,7 @@ type Constraints = {
   maxNumbers?: number;
   minSpecialCharacters: number;
   maxSpecialCharacters?: number;
+  minUniqueCharacters?: number;
 };
 
 const defaultConstraints: Constraints = {
@@ -46,7 +47,7 @@ class Checkpass {
     if (maxLength && password.length > maxLength)
       return `Max ${maxLength} characters are allowed`;
 
-    return "ok";
+    return "OK";
   }
 
   #checkCapitalLetters(
@@ -67,32 +68,63 @@ class Checkpass {
     if (!capsRegex.test(password))
       return `Minimum ${minCapitalLetters} capital letters are required`;
 
-    return "Well done! That's correct";
+    return "OK";
   }
 
   #checkSpecialCharacters() {
     // TODO
   }
 
+  #checkUniqueCharacters(
+    password: string,
+    minLength: number,
+    minUniqueCharacters: number | undefined
+  ) {
+    if (!minUniqueCharacters) return;
+
+    if (minUniqueCharacters > minLength)
+      throw new Error(
+        "The minimum length requirements cannot be less than the minimum unique character requirements"
+      );
+
+    const uniqueCharacters = new Set([...password]);
+
+    if (uniqueCharacters.size < minUniqueCharacters)
+      return `Minimum ${minUniqueCharacters} unique characters are required`;
+
+    return "OK";
+  }
+
   enforce(password: string, constraints: Constraints = defaultConstraints) {
     console.log("Password: ", password);
 
-    const lengthVerify = this.#checklength(
+    /* Check the length constraints */
+    const lengthConstraints = this.#checklength(
       password,
       constraints.minLength,
       constraints.maxLength
     );
 
-    if (lengthVerify !== "ok") return;
+    console.log("Verify Length: ", lengthConstraints);
+    if (lengthConstraints !== "OK") return;
 
-    const capitalLettersVerify = this.#checkCapitalLetters(
+    /* Check capital letters constraints */
+    const capitalLettersConstraints = this.#checkCapitalLetters(
       password,
       constraints.minCapitalLetters,
       constraints.maxCapitalLetters
     );
+    console.log("Verify Capital Letters: ", capitalLettersConstraints);
+    if (capitalLettersConstraints !== "OK") return;
 
-    console.log("Verify length: ", lengthVerify);
-    console.log("Verify Capital Letters: ", capitalLettersVerify);
+    /* Check unique character constraints */
+    const uniqueCharacterConstraints = this.#checkUniqueCharacters(
+      password,
+      constraints.minLength,
+      constraints.minUniqueCharacters
+    );
+    console.log("Verify Unique Characters: ", uniqueCharacterConstraints);
+    if (uniqueCharacterConstraints !== "OK") return;
   }
 }
 
