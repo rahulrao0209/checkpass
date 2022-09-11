@@ -49,8 +49,25 @@ class Checkpass {
     return "ok";
   }
 
-  #checkCapitalLetters() {
-    // TODO
+  #checkCapitalLetters(
+    password: string,
+    minCapitalLetters: number,
+    maxCapitalLetters: number | undefined
+  ) {
+    const checkCapsMin = `^(.*?[A-Z]){${minCapitalLetters},}.*$`;
+    const capsRegex = new RegExp(checkCapsMin);
+
+    if (maxCapitalLetters) {
+      const checkCapsMax = `^(.*?[A-Z]){${maxCapitalLetters + 1}}.*$`;
+      const capsRegexMax = new RegExp(checkCapsMax);
+      if (capsRegexMax.test(password))
+        return `Maximum ${maxCapitalLetters} capital letters are allowed`;
+    }
+
+    if (!capsRegex.test(password))
+      return `Minimum ${minCapitalLetters} capital letters are required`;
+
+    return "Well done! That's correct";
   }
 
   #checkSpecialCharacters() {
@@ -66,7 +83,16 @@ class Checkpass {
       constraints.maxLength
     );
 
+    if (lengthVerify !== "ok") return;
+
+    const capitalLettersVerify = this.#checkCapitalLetters(
+      password,
+      constraints.minCapitalLetters,
+      constraints.maxCapitalLetters
+    );
+
     console.log("Verify length: ", lengthVerify);
+    console.log("Verify Capital Letters: ", capitalLettersVerify);
   }
 }
 
