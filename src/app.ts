@@ -20,11 +20,11 @@ import checkpass from "./checkpass";
 // });
 
 // TEST 4
-checkpass.enforce("RahulR123#", {
+checkpass.enforce("RahulR123#Pass", {
   minLength: 6,
   minCapitalLetters: 2,
   maxCapitalLetters: 3,
   minNumbers: 1,
   minSpecialCharacters: 1,
-  minUniqueCharacters: 4,
+  minUniqueCharacters: 10,
 });

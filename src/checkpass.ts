@@ -14,6 +14,7 @@
     Check 6: Specify the min and max number of numbers(optional)
     Check 7: Specify if special characters are required
     Check 8: Specify the min and max number of special characters(optional)
+    Check 9: Specify the number of unique characters required (optional)
     Check 9: Allow options to provide a deny list to prevent certain characters/special
              characters from being used.
 */
@@ -77,14 +78,14 @@ class Checkpass {
 
   #checkUniqueCharacters(
     password: string,
-    minLength: number,
+    maxLength: number | undefined,
     minUniqueCharacters: number | undefined
   ) {
     if (!minUniqueCharacters) return;
 
-    if (minUniqueCharacters > minLength)
+    if (maxLength && minUniqueCharacters > maxLength)
       throw new Error(
-        "The minimum length requirements cannot be less than the minimum unique character requirements"
+        "Required unique characters cannot be more than the maximum allowed length"
       );
 
     const uniqueCharacters = new Set([...password]);
@@ -120,7 +121,7 @@ class Checkpass {
     /* Check unique character constraints */
     const uniqueCharacterConstraints = this.#checkUniqueCharacters(
       password,
-      constraints.minLength,
+      constraints.maxLength,
       constraints.minUniqueCharacters
     );
     console.log("Verify Unique Characters: ", uniqueCharacterConstraints);
