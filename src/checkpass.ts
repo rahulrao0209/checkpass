@@ -28,6 +28,7 @@ type Constraints = {
   minSpecialCharacters: number;
   maxSpecialCharacters?: number;
   minUniqueCharacters?: number;
+  disallowCharacters?: string[];
 };
 
 const defaultConstraints: Constraints = {
@@ -74,6 +75,26 @@ class Checkpass {
 
   #checkSpecialCharacters() {
     // TODO
+  }
+
+  #checkDisallowedCharacters(
+    password: string,
+    disallowCharacters: string[] | undefined
+  ) {
+    if (!disallowCharacters) return "OK";
+
+    if (disallowCharacters.some((character) => character.length !== 1))
+      throw new Error("Specify valid characters to be disallowed");
+
+    const passwordCharacters = [...password];
+    if (
+      passwordCharacters.some((character) =>
+        disallowCharacters.includes(character)
+      )
+    )
+      return "These characters cannot be used for your password";
+
+    return "OK";
   }
 
   #checkUniqueCharacters(
@@ -126,6 +147,17 @@ class Checkpass {
     );
     console.log("Verify Unique Characters: ", uniqueCharacterConstraints);
     if (uniqueCharacterConstraints !== "OK") return;
+
+    /* Check disallowed character constraints if any */
+    const disallowedCharacterConstraints = this.#checkDisallowedCharacters(
+      password,
+      constraints.disallowCharacters
+    );
+    console.log(
+      "Verify Disallowed Characters: ",
+      disallowedCharacterConstraints
+    );
+    if (disallowedCharacterConstraints !== "OK") return;
   }
 }
 

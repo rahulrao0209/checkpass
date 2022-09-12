@@ -2,6 +2,7 @@
   "compilerOptions": {
     "module": "CommonJS",
     "target": "es6",
+    "lib": ["ES2016", "DOM"],
     "sourceMap": true,
     "outDir": "./dist",
     "noImplicitAny": true,
