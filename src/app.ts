@@ -9,7 +9,7 @@ import checkpass from "./checkpass";
   - RahulR123#Pass!?<
 */
 
-checkpass.enforce("RahulR02#Pass!?<", {
+checkpass("RahulR02#Pass!?<", {
   minLength: 6,
   minCapitalLetters: 2,
   maxCapitalLetters: 3,
