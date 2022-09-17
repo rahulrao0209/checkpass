@@ -21,6 +21,36 @@ const defaultConstraints: Constraints = {
 };
 
 class Checkpass {
+  #checkGeneralSanity(
+    maxLength: number | undefined,
+    minCapitalLetters: number,
+    minNumbers: number,
+    minSpecialCharacters: number,
+    minUniqueCharacters: number | undefined
+  ) {
+    /* The min requirements for capitals, numbers, special characters or unique characters cannot be greater than the max length if specified */
+    if (!maxLength) return "OK";
+
+    if (maxLength < minCapitalLetters) return "";
+
+    if (maxLength < minNumbers) return "";
+
+    if (maxLength < minSpecialCharacters) return "";
+
+    if (minUniqueCharacters && maxLength < minUniqueCharacters) return "";
+
+    if (
+      maxLength <
+      minCapitalLetters +
+        minNumbers +
+        minSpecialCharacters +
+        (minUniqueCharacters || 0)
+    )
+      return "";
+
+    return "OK";
+  }
+
   #checklength(
     password: string,
     minLength: number,
@@ -51,6 +81,27 @@ class Checkpass {
 
     if (!capsRegex.test(password))
       return `Minimum ${minCapitalLetters} capital letters are required`;
+
+    return "OK";
+  }
+
+  #checkNumericCharacters(
+    password: string,
+    minNumbers: number,
+    maxNumbers: number | undefined
+  ) {
+    const checkNumsMin = `^(.*?[0-9]){${minNumbers},}.*$`;
+    const numsRegex = new RegExp(checkNumsMin);
+
+    if (maxNumbers) {
+      const checkNumsMax = `^(.*?[0-9]){${maxNumbers + 1}}.*$`;
+      const numsRegexMax = new RegExp(checkNumsMax);
+      if (numsRegexMax.test(password))
+        return `Maximum ${maxNumbers} numeric characters are allowed`;
+    }
+
+    if (!numsRegex.test(password))
+      return `Minimum ${minNumbers} numeric characters are required`;
 
     return "OK";
   }
@@ -93,7 +144,9 @@ class Checkpass {
         disallowCharacters.includes(character)
       )
     )
-      return "These characters cannot be used for your password";
+      return `${[
+        disallowCharacters,
+      ]} characters cannot be used for your password`;
 
     return "OK";
   }
@@ -121,12 +174,32 @@ class Checkpass {
   enforce(password: string, constraints: Constraints = defaultConstraints) {
     console.log("Password: ", password);
 
-    /* Check the length constraints */
-    const lengthConstraints = this.#checklength(
-      password,
-      constraints.minLength,
-      constraints.maxLength
+    const {
+      minLength,
+      maxLength,
+      minNumbers,
+      maxNumbers,
+      minCapitalLetters,
+      maxCapitalLetters,
+      minSpecialCharacters,
+      maxSpecialCharacters,
+      minUniqueCharacters,
+      disallowCharacters,
+    } = constraints;
+
+    /* Perform general sanity based on the constraints specified */
+    const generalSanityCheck = this.#checkGeneralSanity(
+      maxLength,
+      minCapitalLetters,
+      minNumbers,
+      minSpecialCharacters,
+      minUniqueCharacters
     );
+    console.log("General Sanity: ", generalSanityCheck);
+    if (generalSanityCheck !== "OK") return;
+
+    /* Check the length constraints */
+    const lengthConstraints = this.#checklength(password, minLength, maxLength);
 
     console.log("Verify Length: ", lengthConstraints);
     if (lengthConstraints !== "OK") return;
@@ -134,17 +207,26 @@ class Checkpass {
     /* Check capital letters constraints */
     const capitalLettersConstraints = this.#checkCapitalLetters(
       password,
-      constraints.minCapitalLetters,
-      constraints.maxCapitalLetters
+      minCapitalLetters,
+      maxCapitalLetters
     );
     console.log("Verify Capital Letters: ", capitalLettersConstraints);
     if (capitalLettersConstraints !== "OK") return;
 
+    /* Check numeric character constraints */
+    const numericCharacterConstraints = this.#checkNumericCharacters(
+      password,
+      minNumbers,
+      maxNumbers
+    );
+    console.log("Verify Numeric characters: ", numericCharacterConstraints);
+    if (numericCharacterConstraints !== "OK") return;
+
     /* Check unique character constraints */
     const uniqueCharacterConstraints = this.#checkUniqueCharacters(
       password,
-      constraints.maxLength,
-      constraints.minUniqueCharacters
+      maxLength,
+      minUniqueCharacters
     );
     console.log("Verify Unique Characters: ", uniqueCharacterConstraints);
     if (uniqueCharacterConstraints !== "OK") return;
@@ -152,7 +234,7 @@ class Checkpass {
     /* Check disallowed character constraints if any */
     const disallowedCharacterConstraints = this.#checkDisallowedCharacters(
       password,
-      constraints.disallowCharacters
+      disallowCharacters
     );
     console.log(
       "Verify Disallowed Characters: ",
@@ -163,8 +245,8 @@ class Checkpass {
     /* Check special character constraints */
     const specialCharacterConstraints = this.#checkSpecialCharacters(
       password,
-      constraints.minSpecialCharacters,
-      constraints.maxSpecialCharacters
+      minSpecialCharacters,
+      maxSpecialCharacters
     );
     console.log("Verify Special Characters: ", specialCharacterConstraints);
     if (specialCharacterConstraints !== "OK") return;
@@ -172,3 +254,6 @@ class Checkpass {
 }
 
 export default new Checkpass();
+
+//TODO - Check the min and max value for every constraint
+// i.e the max value cannot be less than the min value and vice versa

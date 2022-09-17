@@ -9,12 +9,13 @@ import checkpass from "./checkpass";
   - RahulR123#Pass!?<
 */
 
-checkpass.enforce("RahulR123#Pass!?<", {
+checkpass.enforce("RahulR02#Pass!?<", {
   minLength: 6,
   minCapitalLetters: 2,
   maxCapitalLetters: 3,
-  minNumbers: 1,
-  minSpecialCharacters: 4,
+  minNumbers: 2,
+  maxNumbers: 5,
+  minSpecialCharacters: 2,
   maxSpecialCharacters: 6,
   minUniqueCharacters: 4,
   disallowCharacters: ["$", "*"],
