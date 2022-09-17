@@ -21,6 +21,12 @@ const defaultConstraints: Constraints = {
 };
 
 class Checkpass {
+  #checkMinMax(minValue: number, maxValue: number | undefined) {
+    /* The min value of a constraint cannot be greater than the max value and vice versa */
+    if (!maxValue) return 1;
+    return maxValue - minValue;
+  }
+
   #checkGeneralSanity(
     maxLength: number | undefined,
     minCapitalLetters: number,
@@ -56,6 +62,10 @@ class Checkpass {
     minLength: number,
     maxLength: number | undefined
   ) {
+    if (this.#checkMinMax(minLength, maxLength) < 0) {
+      return "The min value of the length constraint cannot exceed the max value";
+    }
+
     if (password.length < minLength) return "too small";
 
     if (maxLength && password.length > maxLength)
@@ -69,6 +79,10 @@ class Checkpass {
     minCapitalLetters: number,
     maxCapitalLetters: number | undefined
   ) {
+    if (this.#checkMinMax(minCapitalLetters, maxCapitalLetters) < 0) {
+      return "The min value of the capital letters constraint cannot exceed the max value";
+    }
+
     const checkCapsMin = `^(.*?[A-Z]){${minCapitalLetters},}.*$`;
     const capsRegex = new RegExp(checkCapsMin);
 
@@ -90,6 +104,10 @@ class Checkpass {
     minNumbers: number,
     maxNumbers: number | undefined
   ) {
+    if (this.#checkMinMax(minNumbers, maxNumbers) < 0) {
+      return "The min value of the numeric character constraints cannot exceed the max value";
+    }
+
     const checkNumsMin = `^(.*?[0-9]){${minNumbers},}.*$`;
     const numsRegex = new RegExp(checkNumsMin);
 
@@ -111,6 +129,10 @@ class Checkpass {
     minSpecialCharacters: number,
     maxSpecialCharacters: number | undefined
   ) {
+    if (this.#checkMinMax(minSpecialCharacters, maxSpecialCharacters) < 0) {
+      return "The min value of the special character constraints cannot exceed the max value";
+    }
+
     const checkSpecialMin = `^(.*?[ -\/:-@\[-\`{-~]){${minSpecialCharacters},}.*$`;
     const specialsRegex = new RegExp(checkSpecialMin);
 
