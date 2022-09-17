@@ -73,8 +73,27 @@ class Checkpass {
     return "OK";
   }
 
-  #checkSpecialCharacters() {
-    // TODO
+  #checkSpecialCharacters(
+    password: string,
+    minSpecialCharacters: number,
+    maxSpecialCharacters: number | undefined
+  ) {
+    const checkSpecialMin = `^(.*?[ -\/:-@\[-\`{-~]){${minSpecialCharacters},}.*$`;
+    const specialsRegex = new RegExp(checkSpecialMin);
+
+    if (maxSpecialCharacters) {
+      const checkSpecialMax = `^(.*?[ -\/:-@\[-\`{-~]){${
+        maxSpecialCharacters + 1
+      }}.*$`;
+      const specialsRegexMax = new RegExp(checkSpecialMax);
+      if (specialsRegexMax.test(password))
+        return `Maximum ${maxSpecialCharacters} special characters are allowed`;
+    }
+
+    if (!specialsRegex.test(password))
+      return `Minimum ${minSpecialCharacters} special characters are required`;
+
+    return "OK";
   }
 
   #checkDisallowedCharacters(
@@ -158,6 +177,15 @@ class Checkpass {
       disallowedCharacterConstraints
     );
     if (disallowedCharacterConstraints !== "OK") return;
+
+    /* Check special character constraints */
+    const specialCharacterConstraints = this.#checkSpecialCharacters(
+      password,
+      constraints.minSpecialCharacters,
+      constraints.maxSpecialCharacters
+    );
+    console.log("Verify Special Characters: ", specialCharacterConstraints);
+    if (specialCharacterConstraints !== "OK") return;
   }
 }
 
