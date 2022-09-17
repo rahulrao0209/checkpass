@@ -1,26 +1,14 @@
 import checkpass from "./checkpass";
 
-// TEST 1
-// checkpass("Rahul123#", {
-//   minLength: 6,
-//   minCapitalLetters: 2,
-//   minNumbers: 1,
-//   minSpecialCharacters: 1,
-// });
+/*
+  Test cases
+  - RahulR123#Pass
+  - Rahul
+  - RaAbc!
+  - Rahul123#
+  - RahulR123#Pass!?<
+*/
 
-// // TEST 2
-// checkpass("RaAbc!");
-
-// // TEST 3
-// checkpass.enforce("Rahul", {
-//   minLength: 6,
-//   minCapitalLetters: 2,
-//   minNumbers: 1,
-//   minSpecialCharacters: 1,
-// });
-
-// TEST 4
-// RahulR123#Pass
 checkpass.enforce("RahulR123#Pass!?<", {
   minLength: 6,
   minCapitalLetters: 2,
