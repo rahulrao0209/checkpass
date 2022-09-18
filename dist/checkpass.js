@@ -5,7 +5,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Checkpass_instances, _Checkpass_checkMinMax, _Checkpass_checkGeneralSanity, _Checkpass_checklength, _Checkpass_checkCapitalLetters, _Checkpass_checkNumericCharacters, _Checkpass_checkSpecialCharacters, _Checkpass_checkDisallowedCharacters, _Checkpass_checkUniqueCharacters;
+var _Checkpass_instances, _Checkpass_checkMinMax, _Checkpass_checkNoSpace, _Checkpass_checkGeneralSanity, _Checkpass_checklength, _Checkpass_checkCapitalLetters, _Checkpass_checkNumericCharacters, _Checkpass_checkSpecialCharacters, _Checkpass_checkDisallowedCharacters, _Checkpass_checkUniqueCharacters;
 Object.defineProperty(exports, "__esModule", { value: true });
 const defaultConstraints = {
     minLength: 0,
@@ -18,40 +18,46 @@ class Checkpass {
         _Checkpass_instances.add(this);
     }
     enforce(password, constraints = defaultConstraints) {
-        console.log("Password: ", password);
         const { minLength, maxLength, minNumbers, maxNumbers, minCapitalLetters, maxCapitalLetters, minSpecialCharacters, maxSpecialCharacters, minUniqueCharacters, disallowCharacters, } = constraints;
         /* Perform general sanity based on the constraints specified */
         const generalSanityCheck = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkGeneralSanity).call(this, maxLength, minCapitalLetters, minNumbers, minSpecialCharacters, minUniqueCharacters);
         console.log("General Sanity: ", generalSanityCheck);
         if (generalSanityCheck !== "OK")
             return;
+        /* Trim the string to remove any spaces at the start or end */
+        const _password = password.trim();
+        /* Check no space */
+        const spacingConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkNoSpace).call(this, _password);
+        console.log("Verify Length: ", spacingConstraints);
+        if (spacingConstraints !== "OK")
+            return;
         /* Check the length constraints */
-        const lengthConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checklength).call(this, password, minLength, maxLength);
+        const lengthConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checklength).call(this, _password, minLength, maxLength);
         console.log("Verify Length: ", lengthConstraints);
         if (lengthConstraints !== "OK")
             return;
         /* Check capital letters constraints */
-        const capitalLettersConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkCapitalLetters).call(this, password, minCapitalLetters, maxCapitalLetters);
+        const capitalLettersConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkCapitalLetters).call(this, _password, minCapitalLetters, maxCapitalLetters);
         console.log("Verify Capital Letters: ", capitalLettersConstraints);
         if (capitalLettersConstraints !== "OK")
             return;
         /* Check numeric character constraints */
-        const numericCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkNumericCharacters).call(this, password, minNumbers, maxNumbers);
+        const numericCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkNumericCharacters).call(this, _password, minNumbers, maxNumbers);
         console.log("Verify Numeric characters: ", numericCharacterConstraints);
         if (numericCharacterConstraints !== "OK")
             return;
         /* Check unique character constraints */
-        const uniqueCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkUniqueCharacters).call(this, password, maxLength, minUniqueCharacters);
+        const uniqueCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkUniqueCharacters).call(this, _password, maxLength, minUniqueCharacters);
         console.log("Verify Unique Characters: ", uniqueCharacterConstraints);
         if (uniqueCharacterConstraints !== "OK")
             return;
         /* Check disallowed character constraints if any */
-        const disallowedCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkDisallowedCharacters).call(this, password, disallowCharacters);
+        const disallowedCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkDisallowedCharacters).call(this, _password, disallowCharacters);
         console.log("Verify Disallowed Characters: ", disallowedCharacterConstraints);
         if (disallowedCharacterConstraints !== "OK")
             return;
         /* Check special character constraints */
-        const specialCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkSpecialCharacters).call(this, password, minSpecialCharacters, maxSpecialCharacters);
+        const specialCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkSpecialCharacters).call(this, _password, minSpecialCharacters, maxSpecialCharacters);
         console.log("Verify Special Characters: ", specialCharacterConstraints);
         if (specialCharacterConstraints !== "OK")
             return;
@@ -62,6 +68,10 @@ _Checkpass_instances = new WeakSet(), _Checkpass_checkMinMax = function _Checkpa
     if (!maxValue)
         return 1;
     return maxValue - minValue;
+}, _Checkpass_checkNoSpace = function _Checkpass_checkNoSpace(password) {
+    if (password.includes(" "))
+        return "Space is not allowed";
+    return "OK";
 }, _Checkpass_checkGeneralSanity = function _Checkpass_checkGeneralSanity(maxLength, minCapitalLetters, minNumbers, minSpecialCharacters, minUniqueCharacters) {
     /* The min requirements for capitals, numbers, special characters or unique characters cannot be greater than the max length if specified */
     if (!maxLength)
@@ -157,4 +167,5 @@ _Checkpass_instances = new WeakSet(), _Checkpass_checkMinMax = function _Checkpa
     return "OK";
 };
 exports.default = new Checkpass().enforce.bind(new Checkpass());
+// Todo - add a check to disallow spaces.
 //# sourceMappingURL=checkpass.js.map

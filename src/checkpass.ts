@@ -27,6 +27,11 @@ class Checkpass {
     return maxValue - minValue;
   }
 
+  #checkNoSpace(password: string) {
+    if (password.includes(" ")) return "Space is not allowed";
+    return "OK";
+  }
+
   #checkGeneralSanity(
     maxLength: number | undefined,
     minCapitalLetters: number,
@@ -194,8 +199,6 @@ class Checkpass {
   }
 
   enforce(password: string, constraints: Constraints = defaultConstraints) {
-    console.log("Password: ", password);
-
     const {
       minLength,
       maxLength,
@@ -220,15 +223,27 @@ class Checkpass {
     console.log("General Sanity: ", generalSanityCheck);
     if (generalSanityCheck !== "OK") return;
 
+    /* Trim the string to remove any spaces at the start or end */
+    const _password: string = password.trim();
+
+    /* Check no space */
+    const spacingConstraints = this.#checkNoSpace(_password);
+    console.log("Verify Length: ", spacingConstraints);
+    if (spacingConstraints !== "OK") return;
+
     /* Check the length constraints */
-    const lengthConstraints = this.#checklength(password, minLength, maxLength);
+    const lengthConstraints = this.#checklength(
+      _password,
+      minLength,
+      maxLength
+    );
 
     console.log("Verify Length: ", lengthConstraints);
     if (lengthConstraints !== "OK") return;
 
     /* Check capital letters constraints */
     const capitalLettersConstraints = this.#checkCapitalLetters(
-      password,
+      _password,
       minCapitalLetters,
       maxCapitalLetters
     );
@@ -237,7 +252,7 @@ class Checkpass {
 
     /* Check numeric character constraints */
     const numericCharacterConstraints = this.#checkNumericCharacters(
-      password,
+      _password,
       minNumbers,
       maxNumbers
     );
@@ -246,7 +261,7 @@ class Checkpass {
 
     /* Check unique character constraints */
     const uniqueCharacterConstraints = this.#checkUniqueCharacters(
-      password,
+      _password,
       maxLength,
       minUniqueCharacters
     );
@@ -255,7 +270,7 @@ class Checkpass {
 
     /* Check disallowed character constraints if any */
     const disallowedCharacterConstraints = this.#checkDisallowedCharacters(
-      password,
+      _password,
       disallowCharacters
     );
     console.log(
@@ -266,7 +281,7 @@ class Checkpass {
 
     /* Check special character constraints */
     const specialCharacterConstraints = this.#checkSpecialCharacters(
-      password,
+      _password,
       minSpecialCharacters,
       maxSpecialCharacters
     );
@@ -276,3 +291,5 @@ class Checkpass {
 }
 
 export default new Checkpass().enforce.bind(new Checkpass());
+
+// Todo - add a check to disallow spaces.
