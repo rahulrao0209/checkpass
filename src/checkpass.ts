@@ -291,5 +291,3 @@ class Checkpass {
 }
 
 export default new Checkpass().enforce.bind(new Checkpass());
-
-// Todo - add a check to disallow spaces.
