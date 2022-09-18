@@ -276,6 +276,3 @@ class Checkpass {
 }
 
 export default new Checkpass().enforce.bind(new Checkpass());
-
-//TODO - Check the min and max value for every constraint
-// i.e the max value cannot be less than the min value and vice versa
