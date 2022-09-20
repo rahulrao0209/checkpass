@@ -42,13 +42,25 @@ class Checkpass {
     /* The min requirements for capitals, numbers, special characters or unique characters cannot be greater than the max length if specified */
     if (!maxLength) return "OK";
 
-    if (maxLength < minCapitalLetters) return "";
+    if (maxLength < minCapitalLetters)
+      throw new Error(
+        "The max-length cannot be less than min required capital letters"
+      );
 
-    if (maxLength < minNumbers) return "";
+    if (maxLength < minNumbers)
+      throw new Error(
+        "The max-length cannot be less than min required numbers"
+      );
 
-    if (maxLength < minSpecialCharacters) return "";
+    if (maxLength < minSpecialCharacters)
+      throw new Error(
+        "The max-length cannot be less than the min required special characters"
+      );
 
-    if (minUniqueCharacters && maxLength < minUniqueCharacters) return "";
+    if (minUniqueCharacters && maxLength < minUniqueCharacters)
+      throw new Error(
+        "The max-length cannot be less than the min required unique characters"
+      );
 
     if (
       maxLength <
@@ -57,7 +69,9 @@ class Checkpass {
         minSpecialCharacters +
         (minUniqueCharacters || 0)
     )
-      return "";
+      throw new Error(
+        "The max-length cannot be less than the sum of min required capital letters, numbers, special and unique characters"
+      );
 
     return "OK";
   }
@@ -183,7 +197,7 @@ class Checkpass {
     maxLength: number | undefined,
     minUniqueCharacters: number | undefined
   ) {
-    if (!minUniqueCharacters) return;
+    if (!minUniqueCharacters) return "OK";
 
     if (maxLength && minUniqueCharacters > maxLength)
       throw new Error(
@@ -220,16 +234,14 @@ class Checkpass {
       minSpecialCharacters,
       minUniqueCharacters
     );
-    console.log("General Sanity: ", generalSanityCheck);
-    if (generalSanityCheck !== "OK") return;
+    if (generalSanityCheck !== "OK") return generalSanityCheck;
 
     /* Trim the string to remove any spaces at the start or end */
     const _password: string = password.trim();
 
     /* Check no space */
     const spacingConstraints = this.#checkNoSpace(_password);
-    console.log("Verify Length: ", spacingConstraints);
-    if (spacingConstraints !== "OK") return;
+    if (spacingConstraints !== "OK") return spacingConstraints;
 
     /* Check the length constraints */
     const lengthConstraints = this.#checklength(
@@ -237,9 +249,7 @@ class Checkpass {
       minLength,
       maxLength
     );
-
-    console.log("Verify Length: ", lengthConstraints);
-    if (lengthConstraints !== "OK") return;
+    if (lengthConstraints !== "OK") return lengthConstraints;
 
     /* Check capital letters constraints */
     const capitalLettersConstraints = this.#checkCapitalLetters(
@@ -247,8 +257,7 @@ class Checkpass {
       minCapitalLetters,
       maxCapitalLetters
     );
-    console.log("Verify Capital Letters: ", capitalLettersConstraints);
-    if (capitalLettersConstraints !== "OK") return;
+    if (capitalLettersConstraints !== "OK") return capitalLettersConstraints;
 
     /* Check numeric character constraints */
     const numericCharacterConstraints = this.#checkNumericCharacters(
@@ -256,8 +265,8 @@ class Checkpass {
       minNumbers,
       maxNumbers
     );
-    console.log("Verify Numeric characters: ", numericCharacterConstraints);
-    if (numericCharacterConstraints !== "OK") return;
+    if (numericCharacterConstraints !== "OK")
+      return numericCharacterConstraints;
 
     /* Check unique character constraints */
     const uniqueCharacterConstraints = this.#checkUniqueCharacters(
@@ -265,19 +274,15 @@ class Checkpass {
       maxLength,
       minUniqueCharacters
     );
-    console.log("Verify Unique Characters: ", uniqueCharacterConstraints);
-    if (uniqueCharacterConstraints !== "OK") return;
+    if (uniqueCharacterConstraints !== "OK") return uniqueCharacterConstraints;
 
     /* Check disallowed character constraints if any */
     const disallowedCharacterConstraints = this.#checkDisallowedCharacters(
       _password,
       disallowCharacters
     );
-    console.log(
-      "Verify Disallowed Characters: ",
-      disallowedCharacterConstraints
-    );
-    if (disallowedCharacterConstraints !== "OK") return;
+    if (disallowedCharacterConstraints !== "OK")
+      return disallowedCharacterConstraints;
 
     /* Check special character constraints */
     const specialCharacterConstraints = this.#checkSpecialCharacters(
@@ -285,8 +290,11 @@ class Checkpass {
       minSpecialCharacters,
       maxSpecialCharacters
     );
-    console.log("Verify Special Characters: ", specialCharacterConstraints);
-    if (specialCharacterConstraints !== "OK") return;
+    if (specialCharacterConstraints !== "OK")
+      return specialCharacterConstraints;
+
+    /* All checks passed */
+    return "OK";
   }
 }
 

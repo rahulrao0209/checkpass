@@ -9,7 +9,7 @@ import checkpass from "./checkpass";
   - RahulR123#Pass!?<
 */
 
-checkpass("RahulR02#Pass!?<", {
+const test: string = checkpass("RahulR02#Pass!?<", {
   minLength: 6,
   minCapitalLetters: 2,
   maxCapitalLetters: 3,
@@ -20,3 +20,9 @@ checkpass("RahulR02#Pass!?<", {
   minUniqueCharacters: 4,
   disallowCharacters: ["$", "*"],
 });
+
+if (test === "OK") {
+  console.log("All checks passed");
+} else {
+  console.log(test);
+}
