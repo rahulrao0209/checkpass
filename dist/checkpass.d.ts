@@ -10,5 +10,5 @@ declare type Constraints = {
     minUniqueCharacters?: number;
     disallowCharacters?: string[];
 };
-declare const _default: (password: string, constraints?: Constraints) => void;
+declare const _default: (password: string, constraints?: Constraints) => string;
 export default _default;
