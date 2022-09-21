@@ -6,8 +6,8 @@
     "type": "git",
     "url": "https://github.com/rahulrao0209/checkpass.git"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/checkpass.js",
+  "types": "dist/checkpass.d.ts",
   "type": "commonjs",
   "files": [
     "/dist"
