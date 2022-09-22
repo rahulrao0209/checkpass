@@ -59,5 +59,4 @@ Here is a brief list of checks against which checkpass can check your password.
 - Check 7: Specify if special characters are required
 - Check 8: Specify the min and max number of special characters(optional)
 - Check 9: Specify the number of unique characters required (optional)
-- Check 9: Allow options to provide a deny list to prevent certain characters/special
-- characters from being used.
+- Check 9: Allow options to provide a deny list to prevent certain characters/special characters from being used.
