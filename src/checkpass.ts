@@ -32,6 +32,63 @@ class Checkpass {
     return "OK";
   }
 
+  #sanitizeUserInputs(constraints: Constraints) {
+    const {
+      minLength,
+      maxLength,
+      minNumbers,
+      maxNumbers,
+      minCapitalLetters,
+      maxCapitalLetters,
+      minSpecialCharacters,
+      maxSpecialCharacters,
+      minUniqueCharacters,
+      disallowCharacters,
+    } = constraints;
+
+    /* Check the required values */
+    if (+minLength < 0)
+      throw new Error("minLength should be a positive numeric value!");
+
+    if (+minNumbers < 0)
+      throw new Error("minNumbers should be a positive numeric value!");
+
+    if (+minCapitalLetters < 0)
+      throw new Error("minCapitalLetters should be positive numeric value!");
+
+    if (+minSpecialCharacters < 0)
+      throw new Error("minSpecialCharacters should be positive numeric value!");
+
+    /* Check the optional values if specified */
+    if (maxLength && +maxLength < 0)
+      throw new Error("maxLength should be a positive numeric value!");
+
+    if (maxNumbers && +maxNumbers < 0)
+      throw new Error("maxNumbers should be a positive numeric value!");
+
+    if (maxCapitalLetters && +maxCapitalLetters < 0)
+      throw new Error("maxCapitalLetters should be a positive numeric value!");
+
+    if (maxSpecialCharacters && +maxSpecialCharacters < 0)
+      throw new Error(
+        "maxSpecialCharacters should be a positive numeric value!"
+      );
+
+    if (minUniqueCharacters && +minUniqueCharacters < 0)
+      throw new Error(
+        "minUniqueCharacters should be a positive numeric value!"
+      );
+
+    if (disallowCharacters && disallowCharacters?.length > 0) {
+      disallowCharacters.some((character) => {
+        if (typeof character !== "string" || character.length > 1)
+          throw new Error("disallowCharacters must be list of characters");
+      });
+    }
+
+    return "OK";
+  }
+
   #checkGeneralSanity(
     maxLength: number | undefined,
     minCapitalLetters: number,
@@ -213,6 +270,9 @@ class Checkpass {
   }
 
   enforce(password: string, constraints: Constraints = defaultConstraints) {
+    /* Throw errors for erroneous user inputs */
+    this.#sanitizeUserInputs(constraints);
+
     const {
       minLength,
       maxLength,
@@ -225,6 +285,8 @@ class Checkpass {
       minUniqueCharacters,
       disallowCharacters,
     } = constraints;
+
+    /* Sanitize user input constraints */
 
     /* Perform general sanity based on the constraints specified */
     const generalSanityCheck = this.#checkGeneralSanity(

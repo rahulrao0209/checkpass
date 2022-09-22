@@ -42,7 +42,7 @@ if (check === "OK") {
 ```
 
 The above snippet shows a use case where you check the password against the minimum length,
-minimum capital letters, min and max numeric characters and special characters and allows disallows the
+minimum capital letters, min and max numeric characters and special characters and disallows the
 use of characters($ and \*).
 
 If all the required checks pass you will get a string value "OK" in return from checkpass else you will
