@@ -5,7 +5,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Checkpass_instances, _Checkpass_checkMinMax, _Checkpass_checkNoSpace, _Checkpass_checkGeneralSanity, _Checkpass_checklength, _Checkpass_checkCapitalLetters, _Checkpass_checkNumericCharacters, _Checkpass_checkSpecialCharacters, _Checkpass_checkDisallowedCharacters, _Checkpass_checkUniqueCharacters;
+var _Checkpass_instances, _Checkpass_checkMinMax, _Checkpass_checkNoSpace, _Checkpass_sanitizeUserInputs, _Checkpass_checkGeneralSanity, _Checkpass_checklength, _Checkpass_checkCapitalLetters, _Checkpass_checkNumericCharacters, _Checkpass_checkSpecialCharacters, _Checkpass_checkDisallowedCharacters, _Checkpass_checkUniqueCharacters;
 Object.defineProperty(exports, "__esModule", { value: true });
 const defaultConstraints = {
     minLength: 0,
@@ -18,7 +18,10 @@ class Checkpass {
         _Checkpass_instances.add(this);
     }
     enforce(password, constraints = defaultConstraints) {
+        /* Throw errors for erroneous user inputs */
+        __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_sanitizeUserInputs).call(this, constraints);
         const { minLength, maxLength, minNumbers, maxNumbers, minCapitalLetters, maxCapitalLetters, minSpecialCharacters, maxSpecialCharacters, minUniqueCharacters, disallowCharacters, } = constraints;
+        /* Sanitize user input constraints */
         /* Perform general sanity based on the constraints specified */
         const generalSanityCheck = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkGeneralSanity).call(this, maxLength, minCapitalLetters, minNumbers, minSpecialCharacters, minUniqueCharacters);
         if (generalSanityCheck !== "OK")
@@ -65,6 +68,35 @@ _Checkpass_instances = new WeakSet(), _Checkpass_checkMinMax = function _Checkpa
 }, _Checkpass_checkNoSpace = function _Checkpass_checkNoSpace(password) {
     if (password.includes(" "))
         return "Space is not allowed";
+    return "OK";
+}, _Checkpass_sanitizeUserInputs = function _Checkpass_sanitizeUserInputs(constraints) {
+    const { minLength, maxLength, minNumbers, maxNumbers, minCapitalLetters, maxCapitalLetters, minSpecialCharacters, maxSpecialCharacters, minUniqueCharacters, disallowCharacters, } = constraints;
+    /* Check the required values */
+    if (+minLength < 0)
+        throw new Error("minLength should be a positive numeric value!");
+    if (+minNumbers < 0)
+        throw new Error("minNumbers should be a positive numeric value!");
+    if (+minCapitalLetters < 0)
+        throw new Error("minCapitalLetters should be positive numeric value!");
+    if (+minSpecialCharacters < 0)
+        throw new Error("minSpecialCharacters should be positive numeric value!");
+    /* Check the optional values if specified */
+    if (maxLength && +maxLength < 0)
+        throw new Error("maxLength should be a positive numeric value!");
+    if (maxNumbers && +maxNumbers < 0)
+        throw new Error("maxNumbers should be a positive numeric value!");
+    if (maxCapitalLetters && +maxCapitalLetters < 0)
+        throw new Error("maxCapitalLetters should be a positive numeric value!");
+    if (maxSpecialCharacters && +maxSpecialCharacters < 0)
+        throw new Error("maxSpecialCharacters should be a positive numeric value!");
+    if (minUniqueCharacters && +minUniqueCharacters < 0)
+        throw new Error("minUniqueCharacters should be a positive numeric value!");
+    if (disallowCharacters && (disallowCharacters === null || disallowCharacters === void 0 ? void 0 : disallowCharacters.length) > 0) {
+        disallowCharacters.some((character) => {
+            if (typeof character !== "string" || character.length > 1)
+                throw new Error("disallowCharacters must be list of characters");
+        });
+    }
     return "OK";
 }, _Checkpass_checkGeneralSanity = function _Checkpass_checkGeneralSanity(maxLength, minCapitalLetters, minNumbers, minSpecialCharacters, minUniqueCharacters) {
     /* The min requirements for capitals, numbers, special characters or unique characters cannot be greater than the max length if specified */
