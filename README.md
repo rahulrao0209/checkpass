@@ -96,7 +96,7 @@ const constraints = {
   minLength: 8;
   minSpecialCharacters: 3;
   minCapitalLetters: 0;
-  minNumbers: number;
+  minNumbers: 0;
 }
 ```
 
