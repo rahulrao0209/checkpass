@@ -286,8 +286,6 @@ class Checkpass {
       disallowCharacters,
     } = constraints;
 
-    /* Sanitize user input constraints */
-
     /* Perform general sanity based on the constraints specified */
     const generalSanityCheck = this.#checkGeneralSanity(
       maxLength,

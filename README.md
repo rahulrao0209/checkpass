@@ -6,6 +6,8 @@ Checkpass is a _micro-library_ for _enforcing password constraints_ and _improvi
 npm install checkpass
 ```
 
+![Checkpass](https://drive.google.com/uc?export=view&id=1TinnjosjJaFPs5V_dqgA_Nq1GyMnMzlx)
+
 Checkpass allows you to specify the required password strength and then verify
 whether the requirements are being met. For example you could specify the minimum
 required length of the password, whether numberic characters are required, whether special characters are required, whether capital letters are required and more.
