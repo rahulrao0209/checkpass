@@ -101,6 +101,6 @@ const constraints = {
 ```
 
 The _password_ being checked against the above _constraints_ object would require minimum 8 characters with 3 special characters. Here we do not need to use any numeric characters or capital letters since the value specified for them is 0.
-In case no constraints object is passed checkpassed will assume a default object wherein all the required properties are set to zero by default and hence the password is not being checked against anything at all!
+In case no constraints object is passed checkpass will assume a default object wherein all the required properties are set to zero by default and hence the password is not being checked against anything at all!
 
-<p style="text-align: center"><b>Thank You!</b> for reading.</p>
+<p style="text-align:center"><b>Thank You!</b> for reading.</p>
