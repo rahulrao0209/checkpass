@@ -1,4 +1,4 @@
-![Checkpass](https://drive.google.com/uc?export=view&id=1qlrqFN9n_MygH97Zo2DJzdhjKi38dF2w)
+![Checkpass](./public/Checkpass.png)
 
 <p style="text-align:center">
   <b>Checkpass</b> is a TypeScript micro-library for <i>enforcing password constraints</i> and <i>improving password strength</i> with a simple API.
@@ -102,5 +102,11 @@ const constraints = {
 
 The _password_ being checked against the above _constraints_ object would require minimum 8 characters with 3 special characters. Here we do not need to use any numeric characters or capital letters since the value specified for them is 0.
 In case no constraints object is passed checkpass will assume a default object wherein all the required properties are set to zero by default and hence the password is not being checked against anything at all!
+
+---
+
+## License
+
+Checkpass is licensed under [MIT License](./LICENSE).
 
 <p style="text-align:center"><b>Thank You!</b> for reading.</p>
