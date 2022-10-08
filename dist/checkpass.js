@@ -5,7 +5,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Checkpass_instances, _Checkpass_checkMinMax, _Checkpass_checkNoSpace, _Checkpass_sanitizeUserInputs, _Checkpass_checkGeneralSanity, _Checkpass_checklength, _Checkpass_checkCapitalLetters, _Checkpass_checkNumericCharacters, _Checkpass_checkSpecialCharacters, _Checkpass_checkDisallowedCharacters, _Checkpass_checkUniqueCharacters;
+var _Checkpass_instances, _Checkpass_checkMinMax, _Checkpass_checkNoSpace, _Checkpass_checkInvalidInputs, _Checkpass_checkMinMaxConstraints, _Checkpass_checklength, _Checkpass_checkCapitalLetters, _Checkpass_checkNumericCharacters, _Checkpass_checkSpecialCharacters, _Checkpass_checkDisallowedCharacters, _Checkpass_checkUniqueCharacters;
 Object.defineProperty(exports, "__esModule", { value: true });
 const defaultConstraints = {
     minLength: 0,
@@ -18,12 +18,11 @@ class Checkpass {
         _Checkpass_instances.add(this);
     }
     enforce(password, constraints = defaultConstraints) {
-        /* Throw errors for erroneous user inputs */
-        __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_sanitizeUserInputs).call(this, constraints);
+        /* Throw errors for erroneous user inputs such as negative numbers */
+        __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkInvalidInputs).call(this, constraints);
         const { minLength, maxLength, minNumbers, maxNumbers, minCapitalLetters, maxCapitalLetters, minSpecialCharacters, maxSpecialCharacters, minUniqueCharacters, disallowCharacters, } = constraints;
-        /* Sanitize user input constraints */
         /* Perform general sanity based on the constraints specified */
-        const generalSanityCheck = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkGeneralSanity).call(this, maxLength, minCapitalLetters, minNumbers, minSpecialCharacters, minUniqueCharacters);
+        const generalSanityCheck = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMaxConstraints).call(this, minLength, maxLength, minCapitalLetters, maxCapitalLetters, minNumbers, maxNumbers, minSpecialCharacters, maxSpecialCharacters, minUniqueCharacters);
         if (generalSanityCheck !== "OK")
             return generalSanityCheck;
         /* Trim the string to remove any spaces at the start or end */
@@ -44,24 +43,23 @@ class Checkpass {
         const numericCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkNumericCharacters).call(this, _password, minNumbers, maxNumbers);
         if (numericCharacterConstraints !== "OK")
             return numericCharacterConstraints;
+        /* Check special character constraints */
+        const specialCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkSpecialCharacters).call(this, _password, minSpecialCharacters, maxSpecialCharacters);
+        if (specialCharacterConstraints !== "OK")
+            return specialCharacterConstraints;
         /* Check unique character constraints */
-        const uniqueCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkUniqueCharacters).call(this, _password, maxLength, minUniqueCharacters);
+        const uniqueCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkUniqueCharacters).call(this, _password, minUniqueCharacters);
         if (uniqueCharacterConstraints !== "OK")
             return uniqueCharacterConstraints;
         /* Check disallowed character constraints if any */
         const disallowedCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkDisallowedCharacters).call(this, _password, disallowCharacters);
         if (disallowedCharacterConstraints !== "OK")
             return disallowedCharacterConstraints;
-        /* Check special character constraints */
-        const specialCharacterConstraints = __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkSpecialCharacters).call(this, _password, minSpecialCharacters, maxSpecialCharacters);
-        if (specialCharacterConstraints !== "OK")
-            return specialCharacterConstraints;
         /* All checks passed */
         return "OK";
     }
 }
 _Checkpass_instances = new WeakSet(), _Checkpass_checkMinMax = function _Checkpass_checkMinMax(minValue, maxValue) {
-    /* The min value of a constraint cannot be greater than the max value and vice versa */
     if (!maxValue)
         return 1;
     return maxValue - minValue;
@@ -69,7 +67,7 @@ _Checkpass_instances = new WeakSet(), _Checkpass_checkMinMax = function _Checkpa
     if (password.includes(" "))
         return "Space is not allowed";
     return "OK";
-}, _Checkpass_sanitizeUserInputs = function _Checkpass_sanitizeUserInputs(constraints) {
+}, _Checkpass_checkInvalidInputs = function _Checkpass_checkInvalidInputs(constraints) {
     const { minLength, maxLength, minNumbers, maxNumbers, minCapitalLetters, maxCapitalLetters, minSpecialCharacters, maxSpecialCharacters, minUniqueCharacters, disallowCharacters, } = constraints;
     /* Check the required values */
     if (+minLength < 0)
@@ -98,38 +96,41 @@ _Checkpass_instances = new WeakSet(), _Checkpass_checkMinMax = function _Checkpa
         });
     }
     return "OK";
-}, _Checkpass_checkGeneralSanity = function _Checkpass_checkGeneralSanity(maxLength, minCapitalLetters, minNumbers, minSpecialCharacters, minUniqueCharacters) {
-    /* The min requirements for capitals, numbers, special characters or unique characters cannot be greater than the max length if specified */
-    if (!maxLength)
-        return "OK";
-    if (maxLength < minCapitalLetters)
+}, _Checkpass_checkMinMaxConstraints = function _Checkpass_checkMinMaxConstraints(minLength, maxLength, minCapitalLetters, maxCapitalLetters, minNumbers, maxNumbers, minSpecialCharacters, maxSpecialCharacters, minUniqueCharacters) {
+    /* Check whether the max-length if specified is not less than any of the other specified min required constraint values */
+    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minLength, maxLength) < 0)
+        throw new Error("The max-length cannot be less the required min-length");
+    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minCapitalLetters, maxLength) < 0)
         throw new Error("The max-length cannot be less than min required capital letters");
-    if (maxLength < minNumbers)
+    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minNumbers, maxLength) < 0)
         throw new Error("The max-length cannot be less than min required numbers");
-    if (maxLength < minSpecialCharacters)
+    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minSpecialCharacters, maxLength) < 0)
         throw new Error("The max-length cannot be less than the min required special characters");
-    if (minUniqueCharacters && maxLength < minUniqueCharacters)
+    if (minUniqueCharacters &&
+        __classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minUniqueCharacters, maxLength) < 0)
         throw new Error("The max-length cannot be less than the min required unique characters");
-    if (maxLength <
-        minCapitalLetters +
-            minNumbers +
-            minSpecialCharacters +
-            (minUniqueCharacters || 0))
-        throw new Error("The max-length cannot be less than the sum of min required capital letters, numbers, special and unique characters");
+    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minCapitalLetters +
+        minNumbers +
+        minSpecialCharacters +
+        (minUniqueCharacters || 0), maxLength) < 0)
+        throw new Error("The max-length cannot be less than the sum of min required capital letters, numbers and special and unique characters");
+    /* Check the min-max values of the eligible constraint pairs */
+    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minLength, maxLength) < 0)
+        throw new Error("The min value of the length constraint cannot exceed the max value");
+    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minCapitalLetters, maxCapitalLetters) < 0)
+        throw new Error("The min value of the capital letters constraint cannot exceed the max value");
+    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minNumbers, maxNumbers) < 0)
+        throw new Error("The min value of the numeric character constraints cannot exceed the max value");
+    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minSpecialCharacters, maxSpecialCharacters) < 0)
+        throw new Error("The min value of the special character constraints cannot exceed the max value");
     return "OK";
 }, _Checkpass_checklength = function _Checkpass_checklength(password, minLength, maxLength) {
-    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minLength, maxLength) < 0) {
-        return "The min value of the length constraint cannot exceed the max value";
-    }
     if (password.length < minLength)
-        return "too small";
+        return `Min ${minLength} characters are required`;
     if (maxLength && password.length > maxLength)
         return `Max ${maxLength} characters are allowed`;
     return "OK";
 }, _Checkpass_checkCapitalLetters = function _Checkpass_checkCapitalLetters(password, minCapitalLetters, maxCapitalLetters) {
-    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minCapitalLetters, maxCapitalLetters) < 0) {
-        return "The min value of the capital letters constraint cannot exceed the max value";
-    }
     const checkCapsMin = `^(.*?[A-Z]){${minCapitalLetters},}.*$`;
     const capsRegex = new RegExp(checkCapsMin);
     if (maxCapitalLetters) {
@@ -142,9 +143,6 @@ _Checkpass_instances = new WeakSet(), _Checkpass_checkMinMax = function _Checkpa
         return `Minimum ${minCapitalLetters} capital letters are required`;
     return "OK";
 }, _Checkpass_checkNumericCharacters = function _Checkpass_checkNumericCharacters(password, minNumbers, maxNumbers) {
-    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minNumbers, maxNumbers) < 0) {
-        return "The min value of the numeric character constraints cannot exceed the max value";
-    }
     const checkNumsMin = `^(.*?[0-9]){${minNumbers},}.*$`;
     const numsRegex = new RegExp(checkNumsMin);
     if (maxNumbers) {
@@ -157,9 +155,6 @@ _Checkpass_instances = new WeakSet(), _Checkpass_checkMinMax = function _Checkpa
         return `Minimum ${minNumbers} numeric characters are required`;
     return "OK";
 }, _Checkpass_checkSpecialCharacters = function _Checkpass_checkSpecialCharacters(password, minSpecialCharacters, maxSpecialCharacters) {
-    if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minSpecialCharacters, maxSpecialCharacters) < 0) {
-        return "The min value of the special character constraints cannot exceed the max value";
-    }
     const checkSpecialMin = `^(.*?[ -\/:-@\[-\`{-~]){${minSpecialCharacters},}.*$`;
     const specialsRegex = new RegExp(checkSpecialMin);
     if (maxSpecialCharacters) {
@@ -174,19 +169,15 @@ _Checkpass_instances = new WeakSet(), _Checkpass_checkMinMax = function _Checkpa
 }, _Checkpass_checkDisallowedCharacters = function _Checkpass_checkDisallowedCharacters(password, disallowCharacters) {
     if (!disallowCharacters)
         return "OK";
-    if (disallowCharacters.some((character) => character.length !== 1))
-        throw new Error("Specify valid characters to be disallowed");
     const passwordCharacters = [...password];
     if (passwordCharacters.some((character) => disallowCharacters.includes(character)))
         return `${[
             disallowCharacters,
         ]} characters cannot be used for your password`;
     return "OK";
-}, _Checkpass_checkUniqueCharacters = function _Checkpass_checkUniqueCharacters(password, maxLength, minUniqueCharacters) {
+}, _Checkpass_checkUniqueCharacters = function _Checkpass_checkUniqueCharacters(password, minUniqueCharacters) {
     if (!minUniqueCharacters)
         return "OK";
-    if (maxLength && minUniqueCharacters > maxLength)
-        throw new Error("Required unique characters cannot be more than the maximum allowed length");
     const uniqueCharacters = new Set([...password]);
     if (uniqueCharacters.size < minUniqueCharacters)
         return `Minimum ${minUniqueCharacters} unique characters are required`;

@@ -21,8 +21,8 @@ const defaultConstraints: Constraints = {
 };
 
 class Checkpass {
+  /* The min value of a constraint cannot be greater than the max value and vice versa */
   #checkMinMax(minValue: number, maxValue: number | undefined) {
-    /* The min value of a constraint cannot be greater than the max value and vice versa */
     if (!maxValue) return 1;
     return maxValue - minValue;
   }
@@ -89,45 +89,77 @@ class Checkpass {
     return "OK";
   }
 
-  #checkGeneralSanity(
+  /* The min requirements for capitals, numbers, special characters or unique characters cannot be greater than the max length if specified */
+  #checkMinMaxConstraints(
+    minLength: number,
     maxLength: number | undefined,
     minCapitalLetters: number,
+    maxCapitalLetters: number | undefined,
     minNumbers: number,
+    maxNumbers: number | undefined,
     minSpecialCharacters: number,
+    maxSpecialCharacters: number | undefined,
     minUniqueCharacters: number | undefined
   ) {
-    /* The min requirements for capitals, numbers, special characters or unique characters cannot be greater than the max length if specified */
-    if (!maxLength) return "OK";
+    /* Check whether the max-length if specified is not less than any of the other specified min required constraint values */
+    if (this.#checkMinMax(minLength, maxLength) < 0)
+      throw new Error("The max-length cannot be less the required min-length");
 
-    if (maxLength < minCapitalLetters)
+    if (this.#checkMinMax(minCapitalLetters, maxLength) < 0)
       throw new Error(
         "The max-length cannot be less than min required capital letters"
       );
 
-    if (maxLength < minNumbers)
+    if (this.#checkMinMax(minNumbers, maxLength) < 0)
       throw new Error(
         "The max-length cannot be less than min required numbers"
       );
 
-    if (maxLength < minSpecialCharacters)
+    if (this.#checkMinMax(minSpecialCharacters, maxLength) < 0)
       throw new Error(
         "The max-length cannot be less than the min required special characters"
       );
 
-    if (minUniqueCharacters && maxLength < minUniqueCharacters)
+    if (
+      minUniqueCharacters &&
+      this.#checkMinMax(minUniqueCharacters, maxLength) < 0
+    )
       throw new Error(
         "The max-length cannot be less than the min required unique characters"
       );
 
     if (
-      maxLength <
-      minCapitalLetters +
-        minNumbers +
-        minSpecialCharacters +
-        (minUniqueCharacters || 0)
+      this.#checkMinMax(
+        minCapitalLetters +
+          minNumbers +
+          minSpecialCharacters +
+          (minUniqueCharacters || 0),
+        maxLength
+      ) < 0
     )
       throw new Error(
         "The max-length cannot be less than the sum of min required capital letters, numbers and special and unique characters"
+      );
+
+    /* Check the min-max values of the eligible constraint pairs */
+    if (this.#checkMinMax(minLength, maxLength) < 0)
+      throw new Error(
+        "The min value of the length constraint cannot exceed the max value"
+      );
+
+    if (this.#checkMinMax(minCapitalLetters, maxCapitalLetters) < 0)
+      throw new Error(
+        "The min value of the capital letters constraint cannot exceed the max value"
+      );
+
+    if (this.#checkMinMax(minNumbers, maxNumbers) < 0)
+      throw new Error(
+        "The min value of the numeric character constraints cannot exceed the max value"
+      );
+
+    if (this.#checkMinMax(minSpecialCharacters, maxSpecialCharacters) < 0)
+      throw new Error(
+        "The min value of the special character constraints cannot exceed the max value"
       );
 
     return "OK";
@@ -138,12 +170,6 @@ class Checkpass {
     minLength: number,
     maxLength: number | undefined
   ) {
-    if (this.#checkMinMax(minLength, maxLength) < 0) {
-      throw new Error(
-        "The min value of the length constraint cannot exceed the max value"
-      );
-    }
-
     if (password.length < minLength)
       return `Min ${minLength} characters are required`;
 
@@ -158,12 +184,6 @@ class Checkpass {
     minCapitalLetters: number,
     maxCapitalLetters: number | undefined
   ) {
-    if (this.#checkMinMax(minCapitalLetters, maxCapitalLetters) < 0) {
-      throw new Error(
-        "The min value of the capital letters constraint cannot exceed the max value"
-      );
-    }
-
     const checkCapsMin = `^(.*?[A-Z]){${minCapitalLetters},}.*$`;
     const capsRegex = new RegExp(checkCapsMin);
 
@@ -185,12 +205,6 @@ class Checkpass {
     minNumbers: number,
     maxNumbers: number | undefined
   ) {
-    if (this.#checkMinMax(minNumbers, maxNumbers) < 0) {
-      throw new Error(
-        "The min value of the numeric character constraints cannot exceed the max value"
-      );
-    }
-
     const checkNumsMin = `^(.*?[0-9]){${minNumbers},}.*$`;
     const numsRegex = new RegExp(checkNumsMin);
 
@@ -212,12 +226,6 @@ class Checkpass {
     minSpecialCharacters: number,
     maxSpecialCharacters: number | undefined
   ) {
-    if (this.#checkMinMax(minSpecialCharacters, maxSpecialCharacters) < 0) {
-      throw new Error(
-        "The min value of the special character constraints cannot exceed the max value"
-      );
-    }
-
     const checkSpecialMin = `^(.*?[ -\/:-@\[-\`{-~]){${minSpecialCharacters},}.*$`;
     const specialsRegex = new RegExp(checkSpecialMin);
 
@@ -242,9 +250,6 @@ class Checkpass {
   ) {
     if (!disallowCharacters) return "OK";
 
-    if (disallowCharacters.some((character) => character.length !== 1))
-      throw new Error("Specify valid characters to be disallowed");
-
     const passwordCharacters = [...password];
     if (
       passwordCharacters.some((character) =>
@@ -260,15 +265,9 @@ class Checkpass {
 
   #checkUniqueCharacters(
     password: string,
-    maxLength: number | undefined,
     minUniqueCharacters: number | undefined
   ) {
     if (!minUniqueCharacters) return "OK";
-
-    if (maxLength && minUniqueCharacters > maxLength)
-      throw new Error(
-        "Required unique characters cannot be more than the maximum allowed length"
-      );
 
     const uniqueCharacters = new Set([...password]);
 
@@ -296,11 +295,15 @@ class Checkpass {
     } = constraints;
 
     /* Perform general sanity based on the constraints specified */
-    const generalSanityCheck = this.#checkGeneralSanity(
+    const generalSanityCheck = this.#checkMinMaxConstraints(
+      minLength,
       maxLength,
       minCapitalLetters,
+      maxCapitalLetters,
       minNumbers,
+      maxNumbers,
       minSpecialCharacters,
+      maxSpecialCharacters,
       minUniqueCharacters
     );
     if (generalSanityCheck !== "OK") return generalSanityCheck;
@@ -337,10 +340,18 @@ class Checkpass {
     if (numericCharacterConstraints !== "OK")
       return numericCharacterConstraints;
 
+    /* Check special character constraints */
+    const specialCharacterConstraints = this.#checkSpecialCharacters(
+      _password,
+      minSpecialCharacters,
+      maxSpecialCharacters
+    );
+    if (specialCharacterConstraints !== "OK")
+      return specialCharacterConstraints;
+
     /* Check unique character constraints */
     const uniqueCharacterConstraints = this.#checkUniqueCharacters(
       _password,
-      maxLength,
       minUniqueCharacters
     );
     if (uniqueCharacterConstraints !== "OK") return uniqueCharacterConstraints;
@@ -352,15 +363,6 @@ class Checkpass {
     );
     if (disallowedCharacterConstraints !== "OK")
       return disallowedCharacterConstraints;
-
-    /* Check special character constraints */
-    const specialCharacterConstraints = this.#checkSpecialCharacters(
-      _password,
-      minSpecialCharacters,
-      maxSpecialCharacters
-    );
-    if (specialCharacterConstraints !== "OK")
-      return specialCharacterConstraints;
 
     /* All checks passed */
     return "OK";
