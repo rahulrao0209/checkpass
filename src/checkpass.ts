@@ -103,7 +103,9 @@ class Checkpass {
   ) {
     /* Check whether the max-length if specified is not less than any of the other specified min required constraint values */
     if (this.#checkMinMax(minLength, maxLength) < 0)
-      throw new Error("The max-length cannot be less the required min-length");
+      throw new Error(
+        "The max-length cannot be less than the required min-length"
+      );
 
     if (this.#checkMinMax(minCapitalLetters, maxLength) < 0)
       throw new Error(

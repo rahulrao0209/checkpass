@@ -99,7 +99,7 @@ _Checkpass_instances = new WeakSet(), _Checkpass_checkMinMax = function _Checkpa
 }, _Checkpass_checkMinMaxConstraints = function _Checkpass_checkMinMaxConstraints(minLength, maxLength, minCapitalLetters, maxCapitalLetters, minNumbers, maxNumbers, minSpecialCharacters, maxSpecialCharacters, minUniqueCharacters) {
     /* Check whether the max-length if specified is not less than any of the other specified min required constraint values */
     if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minLength, maxLength) < 0)
-        throw new Error("The max-length cannot be less the required min-length");
+        throw new Error("The max-length cannot be less than the required min-length");
     if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minCapitalLetters, maxLength) < 0)
         throw new Error("The max-length cannot be less than min required capital letters");
     if (__classPrivateFieldGet(this, _Checkpass_instances, "m", _Checkpass_checkMinMax).call(this, minNumbers, maxLength) < 0)
