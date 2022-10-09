@@ -9,7 +9,7 @@ whether the requirements are being met. For example you could specify the minimu
 required length of the password, whether numberic characters are required, whether special characters are required, whether capital letters are required and more.
 You can also pass in a deny list for disallowing certain characters from the password if necessary.
 
----
+_Checkout the [Checkpass Playground](https://checkpass-playground.netlify.app/)_
 
 ## Getting Started
 
