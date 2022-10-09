@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./src/style.scss" />
+  <script src="./src/main.ts" type="module"></script>
+  <title>Playground | Checkpass</title>
+</head>
+
+<body>
+  <nav>
+    <ul class="socials">
+      <li><a href="https://github.com/rahulrao0209" target="_blank"><img src="/images/logos/github-logo.png" alt=""/></a></li>
+      <li><a href="https://www.linkedin.com/in/rahul-rao-517852190/" target="_blank"><img src="/images/logos/linkedin-logo.png" alt=""/></a></li>
+      <li><a href="https://twitter.com/iam__rahul" target="_blank"><img src="/images/logos/twitter-logo.png" alt=""/></a></li>
+    </ul>
+  </nav>
+  <header>
+    <h1 class="title--main">CHECK<span>PASS</span></h1>
+    <h1 class="title--sub">Playground</h1>
+  </header>
+  <section class="password-section">
+    <div class="container">
+      <label for="password">Password</label>
+      <input id="password" spellcheck="false"></input>
+      <p id="checkpass-response"></p>
+    </div>
+  </section>
+  <section class="constraint-options-section">
+    <p id="select-constraints-text">Select the constraints</p>
+    <div class="options">
+      <div class="option">
+        <label for="minLength">Min Length</label>
+        <input id="minLength" type="number" value="0" autocomplete="off"></input>
+      </div>
+      <div class="option">
+        <label for="minCapitalLetters">Min Capital Letters</label>
+        <input id="minCapitalLetters" type="number" value="0" autocomplete="off"></input>
+      </div>
+      <div class="option">
+        <label for="minNumbers">Min Numeric Characters</label>
+        <input id="minNumbers" type="number" value="0" autocomplete="off"></input>
+      </div>
+      <div class="option">
+        <label for="minSpecialCharacters">Min Special Characters</label>
+        <input id="minSpecialCharacters" type="number" value="0" autocomplete="off"></input>
+      </div>
+      <div class="option">
+        <span>(Optional)</span>
+        <label for="maxLength">Max Length</label>
+        <input id="maxLength" type="number" value="0" autocomplete="off"></input>
+      </div>
+      <div class="option">
+        <span>(Optional)</span>
+        <label for="maxCapitalLetters">Max Capital Letters</label>
+        <input id="maxCapitalLetters" type="number" value="0" autocomplete="off"></input>
+      </div>
+      <div class="option">
+        <span>(Optional)</span>
+        <label for="maxNumbers">Max Numeric Characters</label>
+        <input id="maxNumbers" type="number" value="0" autocomplete="off"></input>
+      </div>
+      <div class="option">
+        <span>(Optional)</span>
+        <label for="maxSpecialCharacters">Max Special Characters</label>
+        <input id="maxSpecialCharacters" type="number" value="0" autocomplete="off"></input>
+      </div>
+      <div class="option">
+        <span>(Optional)</span>
+        <label for="minUniqueCharacters">Min Unique Characters</label>
+        <input id="minUniqueCharacters" type="number" value="0" autocomplete="off"></input>
+      </div>
+      <div class="option">
+        <span>(Optional)</span>
+        <span class="tooltip">&#9432;</span>
+        <label for="disallowCharacters">Disallow Characters</label>
+        <input id="disallowCharacters" type="text" autocomplete="off"></input>
+      </div>
+    </div>
+    <button class="set-btn" id="set-btn">Set</button>
+  </section>
+  <footer>Copyright &#169; Checkpass 2022</footer>
+</body>
+
+</html>

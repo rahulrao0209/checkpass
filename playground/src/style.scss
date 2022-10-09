@@ -1,0 +1,335 @@
+@import url("https://fonts.googleapis.com/css2?family=Lilita+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap");
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+:root {
+  /* Colors */
+  --primary-green: #559307;
+  --primary-white: #fff;
+  --primary-dark: #0c0c0c;
+  --primary-yellow: #b9b600;
+  --primary-red: #af1717;
+  --primary-grey: #3d3d3d;
+  --secondary-grey: rgb(177, 177, 177, 0.4);
+  --primary-orange: rgb(255, 106, 0);
+
+  /* Remove input field controls for type number */
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+@mixin formFieldStyles {
+  position: absolute;
+  font-family: "Noto Sans", sans-serif;
+  padding: 0.5rem 1rem;
+  color: var(--primary-white);
+  background-color: var(--primary-dark);
+}
+
+html {
+  font-family: "Lilita One", cursive;
+  font-size: 37.5%; // 1rem = 5px;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+
+  @media only screen and (min-width: 360px) {
+    font-size: 37.5%; // 1rem = 6px
+  }
+
+  @media only screen and (min-width: 576px) {
+    font-size: 55%; // 1rem = 8px
+  }
+
+  @media only screen and (min-width: 768px) {
+    font-size: 62.5%; // 1rem = 10px
+  }
+
+  @media only screen and (min-width: 1500px) {
+    font-size: 75%; // 1rem = 10px
+  }
+}
+
+body {
+  box-sizing: border-box;
+  background-color: var(--primary-dark);
+  height: 100vh;
+}
+/* Navbar and social media icons links */
+.socials {
+  display: flex;
+  padding: 2rem 0 1rem;
+  max-width: 30rem;
+  list-style: none;
+  justify-content: space-evenly;
+  align-items: center;
+  font-size: 2rem;
+  margin-left: auto;
+
+  & > li {
+    margin: 0 1rem;
+    max-width: 3.2rem;
+    max-height: 3.2rem;
+    transition: transform 0.2s;
+
+    /* Hover and Active states */
+    &:hover {
+      cursor: pointer;
+      transform: scale(1.4);
+    }
+
+    &:active {
+      cursor: pointer;
+      transform: scale(0.9);
+    }
+  }
+
+  & img {
+    width: 100%;
+  }
+}
+
+/* Header (Main page title) */
+header {
+  padding: 1rem;
+  text-align: center;
+  font-size: 3rem;
+  line-height: 0.8;
+  color: var(--primary-white);
+  cursor: default;
+
+  & span {
+    display: inline-block;
+    color: var(--primary-green);
+    transition: transform 0.2s;
+    /* Hover state */
+    &:hover {
+      transform: scale(1.4) translateX(2rem);
+    }
+  }
+
+  .title--main {
+    margin: 1rem 0 0;
+  }
+
+  @media only screen and (min-width: 576px) {
+    padding: 0;
+  }
+}
+
+.password-section {
+  text-align: center;
+
+  .container {
+    position: relative;
+    margin: 0 auto;
+    width: 90%;
+
+    @media only screen and (min-width: 478px) {
+      width: 60rem;
+    }
+  }
+
+  & label {
+    @include formFieldStyles;
+    font-size: 1.5em;
+    top: 0.2em;
+    left: 1em;
+  }
+
+  & input {
+    font-family: "Noto Sans", sans-serif;
+    margin: 2rem 0 1rem;
+    width: 100%;
+    padding: 1.5rem;
+    border-radius: 6px;
+    border: 0.5px solid var(--primary-white);
+    background-color: var(--primary-dark);
+    color: var(--primary-white);
+    max-width: 70rem;
+
+    &:focus,
+    &:active {
+      outline: 1px solid var(--primary-white);
+    }
+  }
+}
+
+.constraint-options-section {
+  p {
+    margin: 4rem auto;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    text-align: center;
+    color: var(--primary-white);
+
+    @media only screen and (min-width: 576px) {
+      font-size: 2.4rem;
+      margin: 1.4rem auto 1.5rem;
+    }
+  }
+
+  .set-btn {
+    display: block;
+    margin: 3rem auto;
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    width: 20rem;
+    text-align: center;
+    padding: 0.6em 1.8em;
+    background-color: var(--primary-green);
+    color: var(--primary-white);
+    border: none;
+    border-radius: 6px;
+    transition: all 0.1s;
+    box-shadow: 6px 6px 20px 0px rgb(85, 147, 7, 0.6),
+      -2px 4px 10px 0px rgb(85, 147, 7, 0.6);
+
+    /* Hover and Active States */
+    &:hover,
+    &:active {
+      cursor: pointer;
+      transform: scale(1.1);
+      background-color: darken(#559307, 5);
+    }
+
+    &:active {
+      box-shadow: none;
+      transform: scale(0.9);
+    }
+
+    @media only screen and (min-width: 576px) {
+      font-size: 1.8rem;
+      margin: 2.2rem auto 0;
+      padding: 0.7em 2em;
+    }
+  }
+}
+
+.options {
+  display: grid;
+  margin: 0 auto;
+  justify-content: center;
+  align-content: center;
+  grid-gap: 4rem;
+
+  .option {
+    position: relative;
+
+    & > label {
+      @include formFieldStyles;
+      top: -1.2em;
+      left: 0.8rem;
+      font-size: 1.8em;
+
+      @media only screen and (min-width: 576px) {
+        font-size: 1.2em;
+      }
+    }
+
+    & input {
+      font-family: "Noto Sans", sans-serif;
+      width: 100%;
+      text-align: center;
+      padding: 1.5rem 1.5rem;
+      border-radius: 4px;
+      border: 0.5px solid var(--primary-white);
+      border-bottom: 0.5px solid var(--primary-white);
+      background-color: var(--primary-dark);
+      color: var(--primary-white);
+
+      &:focus,
+      &:active {
+        outline: 1px solid var(--primary-white);
+      }
+
+      @media only screen and (min-width: 576px) {
+        width: 20rem;
+      }
+    }
+
+    & span {
+      position: absolute;
+      background-color: var(--primary-dark);
+      color: var(--primary-yellow);
+      bottom: -0.5em;
+      right: 2.4em;
+      font-family: "Noto Sans", sans-serif;
+      font-size: 1.25em;
+    }
+
+    /* Styling the tooltip */
+    & span.tooltip {
+      color: var(--primary-yellow);
+      top: 0;
+      right: -2.5em;
+
+      &:hover {
+        cursor: default;
+      }
+
+      &::before {
+        content: "Enter all the characters which you wish to disallow (don'add spaces/commas between characters)";
+        opacity: 0;
+        color: var(--primary-white);
+        min-width: 16rem;
+        min-height: 6rem;
+        padding: 1rem;
+        position: absolute;
+        border-radius: 6px;
+        background-color: var(--secondary-grey);
+      }
+
+      &:hover::before {
+        opacity: 1;
+      }
+
+      @media only screen and (min-width: 576px) {
+        right: -0.5em;
+      }
+    }
+  }
+
+  @media only screen and (min-width: 576px) {
+    grid-template-columns: repeat(2, minmax(22rem, auto));
+    grid-gap: 3rem;
+  }
+}
+
+/* Footer section */
+footer {
+  font-size: 2rem;
+  font-family: "Noto Sans", sans-serif;
+  text-align: center;
+  color: var(--primary-white);
+  padding: 2.8rem 0;
+  width: 100%;
+
+  @media only screen and (min-width: 576px) {
+    font-size: 1.5rem;
+  }
+}
+
+#checkpass-response {
+  font-family: "Noto Sans", sans-serif;
+  color: var(--primary-green);
+  min-height: 2rem;
+  font-size: 1.5em;
+}
