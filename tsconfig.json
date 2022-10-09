@@ -5,7 +5,7 @@
     "lib": ["ES2016", "DOM"],
     "sourceMap": true,
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "./lib",
     "noImplicitAny": true,
     "declaration": true,
     "strict": true

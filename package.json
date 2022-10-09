@@ -6,11 +6,11 @@
     "type": "git",
     "url": "https://github.com/rahulrao0209/checkpass.git"
   },
-  "main": "dist/checkpass.js",
-  "types": "dist/checkpass.d.ts",
+  "main": "lib/checkpass.js",
+  "types": "lib/checkpass.d.ts",
   "type": "commonjs",
   "files": [
-    "/dist"
+    "/lib"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
