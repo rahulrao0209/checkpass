@@ -85,6 +85,12 @@ const handleSetButton = function (this: HTMLButtonElement) {
     /* Reset all constraint field values */
     resetAllConstraintValues(constraintFields);
 
+    /* Reset the password value and the checkpass response value */
+    const password = getDomInputElement("password")!;
+    const checkpassResponse = getDomParaElement("checkpass-response");
+    password.value = "";
+    checkpassResponse.innerText = "";
+
     this.style.backgroundColor = buttonStyles.setBtnColor;
     this.style.boxShadow = buttonStyles.setBtnShadow;
     this.textContent = "Set";
