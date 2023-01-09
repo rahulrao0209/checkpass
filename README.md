@@ -93,11 +93,11 @@ For example
 
 ```javascript
 const constraints = {
-  minLength: 8;
-  minSpecialCharacters: 3;
-  minCapitalLetters: 0;
-  minNumbers: 0;
-}
+  minLength: 8,
+  minSpecialCharacters: 3,
+  minCapitalLetters: 0,
+  minNumbers: 0,
+};
 ```
 
 The _password_ being checked against the above _constraints_ object would require minimum 8 characters with 3 special characters. Here we do not need to use any numeric characters or capital letters since the value specified for them is 0.
