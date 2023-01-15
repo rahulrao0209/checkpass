@@ -13,7 +13,8 @@
     "/lib"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "keywords": [
     "check",
@@ -24,5 +25,8 @@
   "license": "MIT",
   "dependencies": {
     "typescript": "^4.8.2"
+  },
+  "devDependencies": {
+    "vitest": "^0.27.1"
   }
 }
