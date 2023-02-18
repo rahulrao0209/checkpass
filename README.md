@@ -40,21 +40,45 @@ const constraints = {
 const password = "TestingR02#Pass!?<";
 
 /* Call checkpass with the arguments */
-const check = checkpass(password, constraints);
+const result = checkpass(password, constraints);
 
-if (check === "OK") {
-  console.log("Well Done. All checks passed!");
-} else {
-  console.log(check);
-}
+/* 
+  Checkpass returns an object providing details of all the constraints.
+  You can use the return value to see if any of the constraints that you 
+  had applied return true; which means that the constraint has failed the check.
+*/
+
+if (result.minLength.value) return result.minLength.message;
+if (result.minCapitalLetters.value) return result.minCapitalLetters.message;
 ```
+
+... and so on for all the required checks. The message will be an empty string if the value is false
+which indicates that the constraint has passed the check.
 
 The above snippet shows a use case where you check the password against the minimum length,
 minimum capital letters, min and max numeric characters and special characters and disallows the
 use of characters($ and \*).
 
-If all the required checks pass you will get a string value "OK" in return from checkpass, else you will
-receive a string message declaring the check which has failed in order to prompt the user to fix it.
+If all the required checks pass, then the corresponding result object will have all the values
+for the constraints set to false and the corresponding message string will be empty as shown below.
+
+Return type for the result
+
+```typeScript
+const result: CheckErrors = {
+  minLength: { value: false, message: "" },
+  maxLength: { value: false, message: "" },
+  minCapitalLetters: { value: false, message: "" },
+  maxCapitalLetters: { value: false, message: "" },
+  minNumbers: { value: false, message: "" },
+  maxNumbers: { value: false, message: "" },
+  minSpecialCharacters: { value: false, message: "" },
+  maxSpecialCharacters: { value: false, message: "" },
+  minUniqueCharacters: { value: false, message: "" },
+  disallowCharacters: { value: false, message: "" },
+  disallowSpaces: { value: false, message: "" },
+};
+```
 
 Here is a brief list of checks against which checkpass can check your password.
 
@@ -73,7 +97,7 @@ if a negative number is specified for any constraint or if the minimum value con
 
 Constraints against which the password needs to be checked can be specified using an object with the following properties.
 
-```typescript
+```typeScript
   minLength: number;
   maxLength?: number; /* optional */
   minCapitalLetters: number;
@@ -91,7 +115,7 @@ that constraint.
 
 For example
 
-```javascript
+```typeScript
 const constraints = {
   minLength: 8,
   minSpecialCharacters: 3,
