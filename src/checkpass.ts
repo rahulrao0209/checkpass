@@ -64,6 +64,9 @@ class Checkpass {
     if (password.includes(" ")) {
       errors.disallowSpaces.value = true;
       errors.disallowSpaces.message = "Space is not allowed";
+    } else {
+      errors.disallowSpaces.value = false;
+      errors.disallowSpaces.message = "";
     }
     return this;
   }
@@ -205,11 +208,17 @@ class Checkpass {
     if (password.length < minLength) {
       errors.minLength.value = true;
       errors.minLength.message = `Min ${minLength} characters are required`;
+    } else {
+      errors.minLength.value = false;
+      errors.minLength.message = "";
     }
 
     if (maxLength && password.length > maxLength) {
-      errors.minLength.value = true;
-      errors.minLength.message = `Min ${minLength} characters are required`;
+      errors.maxLength.value = true;
+      errors.maxLength.message = `Max ${maxLength} characters are allowed`;
+    } else {
+      errors.maxLength.value = false;
+      errors.maxLength.message = "";
     }
 
     return this;
@@ -228,13 +237,19 @@ class Checkpass {
       const capsRegexMax = new RegExp(checkCapsMax);
       if (capsRegexMax.test(password)) {
         errors.maxCapitalLetters.value = true;
-        errors.maxCapitalLetters.message = `Maximum ${maxCapitalLetters} capital letters are allowed`;
+        errors.maxCapitalLetters.message = `Max ${maxCapitalLetters} capital letters are allowed`;
+      } else {
+        errors.maxCapitalLetters.value = false;
+        errors.maxCapitalLetters.message = "";
       }
     }
 
     if (!capsRegex.test(password)) {
       errors.minCapitalLetters.value = true;
-      errors.minCapitalLetters.message = `Minimum ${minCapitalLetters} capital letters are required`;
+      errors.minCapitalLetters.message = `Min ${minCapitalLetters} capital letters are required`;
+    } else {
+      errors.minCapitalLetters.value = false;
+      errors.minCapitalLetters.message = "";
     }
 
     return this;
@@ -253,13 +268,19 @@ class Checkpass {
       const numsRegexMax = new RegExp(checkNumsMax);
       if (numsRegexMax.test(password)) {
         errors.maxNumbers.value = true;
-        errors.maxNumbers.message = `Maximum ${maxNumbers} numeric characters are allowed`;
+        errors.maxNumbers.message = `Max ${maxNumbers} numeric characters are allowed`;
+      } else {
+        errors.maxNumbers.value = false;
+        errors.maxNumbers.message = "";
       }
     }
 
     if (!numsRegex.test(password)) {
       errors.minNumbers.value = true;
-      errors.minNumbers.message = `Minimum ${minNumbers} numeric characters are required`;
+      errors.minNumbers.message = `Min ${minNumbers} numeric characters are required`;
+    } else {
+      errors.minNumbers.value = false;
+      errors.minNumbers.message = "";
     }
 
     return this;
@@ -280,13 +301,19 @@ class Checkpass {
       const specialsRegexMax = new RegExp(checkSpecialMax);
       if (specialsRegexMax.test(password)) {
         errors.maxSpecialCharacters.value = true;
-        errors.maxSpecialCharacters.message = `Maximum ${maxSpecialCharacters} special characters are allowed`;
+        errors.maxSpecialCharacters.message = `Max ${maxSpecialCharacters} special characters are allowed`;
+      } else {
+        errors.maxSpecialCharacters.value = false;
+        errors.maxSpecialCharacters.message = "";
       }
     }
 
     if (!specialsRegex.test(password)) {
       errors.minSpecialCharacters.value = true;
-      errors.minSpecialCharacters.message = `Minimum ${minSpecialCharacters} special characters are required`;
+      errors.minSpecialCharacters.message = `Min ${minSpecialCharacters} special characters are required`;
+    } else {
+      errors.minSpecialCharacters.value = false;
+      errors.minSpecialCharacters.message = "";
     }
 
     return this;
@@ -308,6 +335,9 @@ class Checkpass {
       errors.disallowCharacters.message = `${[
         disallowCharacters,
       ]} characters cannot be used for your password`;
+    } else {
+      errors.disallowCharacters.value = false;
+      errors.disallowCharacters.message = "";
     }
 
     return this;
@@ -323,7 +353,10 @@ class Checkpass {
 
     if (uniqueCharacters.size < minUniqueCharacters) {
       errors.minUniqueCharacters.value = true;
-      errors.minUniqueCharacters.message = `Minimum ${minUniqueCharacters} unique characters are required`;
+      errors.minUniqueCharacters.message = `Min ${minUniqueCharacters} unique characters are required`;
+    } else {
+      errors.minUniqueCharacters.value = false;
+      errors.minUniqueCharacters.message = "";
     }
 
     return this;
