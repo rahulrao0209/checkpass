@@ -1,7 +1,7 @@
 {
   "name": "checkpass",
-  "version": "1.0.5",
-  "description": "A micro-library for checking and enforcing password constraints",
+  "version": "2.0.0",
+  "description": "A micro-library for password validation and setting password constraints.",
   "repository": {
     "type": "git",
     "url": "https://github.com/rahulrao0209/checkpass.git"
