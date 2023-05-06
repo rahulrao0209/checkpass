@@ -24,9 +24,9 @@ npm install checkpass
 ### API and Usage
 
 ```javascript
-import checkpass from "checkpass";
+import checkpass, { Constraints } from "checkpass";
 
-const constraints = {
+const constraints: Constraints = {
   minLength: 6,
   minCapitalLetters: 2,
   minNumbers: 2,
