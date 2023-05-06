@@ -1,6 +1,6 @@
 /* Checkpass is a micro-library for enforcing and verifying password constraints. */
 
-type Constraints = {
+export type Constraints = {
   minLength: number;
   maxLength?: number;
   minCapitalLetters: number;

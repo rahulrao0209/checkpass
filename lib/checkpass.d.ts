@@ -1,4 +1,4 @@
-declare type Constraints = {
+export declare type Constraints = {
     minLength: number;
     maxLength?: number;
     minCapitalLetters: number;
