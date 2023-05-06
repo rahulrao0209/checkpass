@@ -13,39 +13,6 @@ type Constraints = {
   disallowCharacters?: string[];
 };
 
-type CheckError = {
-  value: boolean;
-  message: string;
-};
-
-type CheckErrors = {
-  minLength: CheckError;
-  maxLength: CheckError;
-  minCapitalLetters: CheckError;
-  maxCapitalLetters: CheckError;
-  minNumbers: CheckError;
-  maxNumbers: CheckError;
-  minSpecialCharacters: CheckError;
-  maxSpecialCharacters: CheckError;
-  minUniqueCharacters: CheckError;
-  disallowCharacters: CheckError;
-  disallowSpaces: CheckError;
-};
-
-const errors: CheckErrors = {
-  minLength: { value: false, message: "" },
-  maxLength: { value: false, message: "" },
-  minCapitalLetters: { value: false, message: "" },
-  maxCapitalLetters: { value: false, message: "" },
-  minNumbers: { value: false, message: "" },
-  maxNumbers: { value: false, message: "" },
-  minSpecialCharacters: { value: false, message: "" },
-  maxSpecialCharacters: { value: false, message: "" },
-  minUniqueCharacters: { value: false, message: "" },
-  disallowCharacters: { value: false, message: "" },
-  disallowSpaces: { value: false, message: "" },
-};
-
 const defaultConstraints: Constraints = {
   minLength: 0,
   minCapitalLetters: 0,
@@ -61,14 +28,8 @@ class Checkpass {
   }
 
   #checkNoSpace(password: string) {
-    if (password.includes(" ")) {
-      errors.disallowSpaces.value = true;
-      errors.disallowSpaces.message = "Space is not allowed";
-    } else {
-      errors.disallowSpaces.value = false;
-      errors.disallowSpaces.message = "";
-    }
-    return this;
+    if (password.includes(" ")) return "Space is not allowed";
+    return "OK";
   }
 
   #checkInvalidInputs(constraints: Constraints) {
@@ -197,7 +158,7 @@ class Checkpass {
         "The min value of the special character constraints cannot exceed the max value"
       );
 
-    return this;
+    return "OK";
   }
 
   #checklength(
@@ -205,23 +166,13 @@ class Checkpass {
     minLength: number,
     maxLength: number | undefined
   ) {
-    if (password.length < minLength) {
-      errors.minLength.value = true;
-      errors.minLength.message = `Min ${minLength} characters are required`;
-    } else {
-      errors.minLength.value = false;
-      errors.minLength.message = "";
-    }
+    if (password.length < minLength)
+      return `Min ${minLength} characters are required`;
 
-    if (maxLength && password.length > maxLength) {
-      errors.maxLength.value = true;
-      errors.maxLength.message = `Max ${maxLength} characters are allowed`;
-    } else {
-      errors.maxLength.value = false;
-      errors.maxLength.message = "";
-    }
+    if (maxLength && password.length > maxLength)
+      return `Max ${maxLength} characters are allowed`;
 
-    return this;
+    return "OK";
   }
 
   #checkCapitalLetters(
@@ -235,24 +186,14 @@ class Checkpass {
     if (maxCapitalLetters) {
       const checkCapsMax = `^(.*?[A-Z]){${maxCapitalLetters + 1}}.*$`;
       const capsRegexMax = new RegExp(checkCapsMax);
-      if (capsRegexMax.test(password)) {
-        errors.maxCapitalLetters.value = true;
-        errors.maxCapitalLetters.message = `Max ${maxCapitalLetters} capital letters are allowed`;
-      } else {
-        errors.maxCapitalLetters.value = false;
-        errors.maxCapitalLetters.message = "";
-      }
+      if (capsRegexMax.test(password))
+        return `Maximum ${maxCapitalLetters} capital letters are allowed`;
     }
 
-    if (!capsRegex.test(password)) {
-      errors.minCapitalLetters.value = true;
-      errors.minCapitalLetters.message = `Min ${minCapitalLetters} capital letters are required`;
-    } else {
-      errors.minCapitalLetters.value = false;
-      errors.minCapitalLetters.message = "";
-    }
+    if (!capsRegex.test(password))
+      return `Minimum ${minCapitalLetters} capital letters are required`;
 
-    return this;
+    return "OK";
   }
 
   #checkNumericCharacters(
@@ -266,24 +207,14 @@ class Checkpass {
     if (maxNumbers) {
       const checkNumsMax = `^(.*?[0-9]){${maxNumbers + 1}}.*$`;
       const numsRegexMax = new RegExp(checkNumsMax);
-      if (numsRegexMax.test(password)) {
-        errors.maxNumbers.value = true;
-        errors.maxNumbers.message = `Max ${maxNumbers} numeric characters are allowed`;
-      } else {
-        errors.maxNumbers.value = false;
-        errors.maxNumbers.message = "";
-      }
+      if (numsRegexMax.test(password))
+        return `Maximum ${maxNumbers} numeric characters are allowed`;
     }
 
-    if (!numsRegex.test(password)) {
-      errors.minNumbers.value = true;
-      errors.minNumbers.message = `Min ${minNumbers} numeric characters are required`;
-    } else {
-      errors.minNumbers.value = false;
-      errors.minNumbers.message = "";
-    }
+    if (!numsRegex.test(password))
+      return `Minimum ${minNumbers} numeric characters are required`;
 
-    return this;
+    return "OK";
   }
 
   #checkSpecialCharacters(
@@ -299,24 +230,14 @@ class Checkpass {
         maxSpecialCharacters + 1
       }}.*$`;
       const specialsRegexMax = new RegExp(checkSpecialMax);
-      if (specialsRegexMax.test(password)) {
-        errors.maxSpecialCharacters.value = true;
-        errors.maxSpecialCharacters.message = `Max ${maxSpecialCharacters} special characters are allowed`;
-      } else {
-        errors.maxSpecialCharacters.value = false;
-        errors.maxSpecialCharacters.message = "";
-      }
+      if (specialsRegexMax.test(password))
+        return `Maximum ${maxSpecialCharacters} special characters are allowed`;
     }
 
-    if (!specialsRegex.test(password)) {
-      errors.minSpecialCharacters.value = true;
-      errors.minSpecialCharacters.message = `Min ${minSpecialCharacters} special characters are required`;
-    } else {
-      errors.minSpecialCharacters.value = false;
-      errors.minSpecialCharacters.message = "";
-    }
+    if (!specialsRegex.test(password))
+      return `Minimum ${minSpecialCharacters} special characters are required`;
 
-    return this;
+    return "OK";
   }
 
   #checkDisallowedCharacters(
@@ -330,36 +251,26 @@ class Checkpass {
       passwordCharacters.some((character) =>
         disallowCharacters.includes(character)
       )
-    ) {
-      errors.disallowCharacters.value = true;
-      errors.disallowCharacters.message = `${[
+    )
+      return `${[
         disallowCharacters,
       ]} characters cannot be used for your password`;
-    } else {
-      errors.disallowCharacters.value = false;
-      errors.disallowCharacters.message = "";
-    }
 
-    return this;
+    return "OK";
   }
 
   #checkUniqueCharacters(
     password: string,
     minUniqueCharacters: number | undefined
   ) {
-    if (!minUniqueCharacters) return this;
+    if (!minUniqueCharacters) return "OK";
 
     const uniqueCharacters = new Set([...password]);
 
-    if (uniqueCharacters.size < minUniqueCharacters) {
-      errors.minUniqueCharacters.value = true;
-      errors.minUniqueCharacters.message = `Min ${minUniqueCharacters} unique characters are required`;
-    } else {
-      errors.minUniqueCharacters.value = false;
-      errors.minUniqueCharacters.message = "";
-    }
+    if (uniqueCharacters.size < minUniqueCharacters)
+      return `Minimum ${minUniqueCharacters} unique characters are required`;
 
-    return this;
+    return "OK";
   }
 
   enforce(password: string, constraints: Constraints = defaultConstraints) {
@@ -380,7 +291,7 @@ class Checkpass {
     } = constraints;
 
     /* Perform general sanity based on the constraints specified */
-    this.#checkMinMaxConstraints(
+    const generalSanityCheck = this.#checkMinMaxConstraints(
       minLength,
       maxLength,
       minCapitalLetters,
@@ -391,24 +302,66 @@ class Checkpass {
       maxSpecialCharacters,
       minUniqueCharacters
     );
+    if (generalSanityCheck !== "OK") return generalSanityCheck;
 
     /* Trim the string to remove any spaces at the start or end */
     const _password: string = password.trim();
 
-    /* Check all constraints */
-    this.#checkNoSpace(_password)
-      .#checklength(_password, minLength, maxLength)
-      .#checkCapitalLetters(_password, minCapitalLetters, maxCapitalLetters)
-      .#checkNumericCharacters(_password, minNumbers, maxNumbers)
-      .#checkSpecialCharacters(
-        _password,
-        minSpecialCharacters,
-        maxSpecialCharacters
-      )
-      .#checkUniqueCharacters(_password, minUniqueCharacters)
-      .#checkDisallowedCharacters(_password, disallowCharacters);
+    /* Check no space */
+    const spacingConstraints = this.#checkNoSpace(_password);
+    if (spacingConstraints !== "OK") return spacingConstraints;
 
-    return errors;
+    /* Check the length constraints */
+    const lengthConstraints = this.#checklength(
+      _password,
+      minLength,
+      maxLength
+    );
+    if (lengthConstraints !== "OK") return lengthConstraints;
+
+    /* Check capital letters constraints */
+    const capitalLettersConstraints = this.#checkCapitalLetters(
+      _password,
+      minCapitalLetters,
+      maxCapitalLetters
+    );
+    if (capitalLettersConstraints !== "OK") return capitalLettersConstraints;
+
+    /* Check numeric character constraints */
+    const numericCharacterConstraints = this.#checkNumericCharacters(
+      _password,
+      minNumbers,
+      maxNumbers
+    );
+    if (numericCharacterConstraints !== "OK")
+      return numericCharacterConstraints;
+
+    /* Check special character constraints */
+    const specialCharacterConstraints = this.#checkSpecialCharacters(
+      _password,
+      minSpecialCharacters,
+      maxSpecialCharacters
+    );
+    if (specialCharacterConstraints !== "OK")
+      return specialCharacterConstraints;
+
+    /* Check unique character constraints */
+    const uniqueCharacterConstraints = this.#checkUniqueCharacters(
+      _password,
+      minUniqueCharacters
+    );
+    if (uniqueCharacterConstraints !== "OK") return uniqueCharacterConstraints;
+
+    /* Check disallowed character constraints if any */
+    const disallowedCharacterConstraints = this.#checkDisallowedCharacters(
+      _password,
+      disallowCharacters
+    );
+    if (disallowedCharacterConstraints !== "OK")
+      return disallowedCharacterConstraints;
+
+    /* All checks passed */
+    return "OK";
   }
 }
 

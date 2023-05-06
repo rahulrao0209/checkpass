@@ -11,5 +11,5 @@
     "strict": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "./src/app.ts"]
+  "exclude": ["node_modules", "./src/checkpass.test.ts"]
 }
